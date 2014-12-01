@@ -13,7 +13,11 @@ public class Brain
 	//communication classes
 	public Receive receive;
 	public Send send;
+	//timing class for the lights
+	public LightTiming lightTimer;
+	
 	//Main to commence the program
+	
 	public static void main(String[] args) 
 	{
 		new Brain();
@@ -31,6 +35,8 @@ public class Brain
 		//initialize communication classes
 		send = new Send();
 		receive = new Receive(this);
+		//initialize light timer
+		lightTimer = new LightTiming();
 	}
 	
 	/*
