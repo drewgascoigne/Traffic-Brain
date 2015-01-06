@@ -2,6 +2,7 @@ package brain.trafficlight;
 
 import java.util.ArrayList;
 
+import brain.trafficlight.time.LightTiming;
 import brain.violation.Violations;
 
 public class TrafficLight 
@@ -11,13 +12,20 @@ public class TrafficLight
 	//list of violations this traffic light has received
 	//possibly the buffer to be added to the cloud?
 	ArrayList<Violations> violations = new ArrayList<Violations>();
-	
+	private LightTiming timing;
 	/*
 	 * initialize traffic light
 	 */
 	public TrafficLight(int id)
 	{
 		this.id = id;
+	}
+	/*
+	 * link the timer to this traffic light
+	 */
+	public void addTimer(LightTiming lt)
+	{
+		timing = lt;
 	}
 	/*
 	 * Add a violation to the violations array list 
@@ -34,4 +42,6 @@ public class TrafficLight
 	{
 		//deal with the contents of the message and respond accordingly
 	}
+	
+	
 }

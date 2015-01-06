@@ -3,18 +3,21 @@ package brain.main;
 import brain.communications.Receive;
 import brain.communications.Send;
 import brain.trafficlight.TrafficLight;
+import brain.trafficlight.time.LightTiming;
 
 public class Brain 
 {
 	//Used for identifying which messages are being sent to which light
-	public static final int[]  TRAFFIC_LIGHT_ID = new int[]{1000,2000, 3000, 4000}; 
+	public static final int[]  TRAFFIC_LIGHT_ID = new int[]{1000,2000}; 
 	//Array of traffic lights connected to this brain
 	public TrafficLight[] trafficLight;
+	//timing class for the lights
+	public LightTiming[] lightTimer;
 	//communication classes
 	public Receive receive;
 	public Send send;
-	//timing class for the lights
-	public LightTiming lightTimer;
+	
+	
 	
 	//Main to commence the program
 	
@@ -31,12 +34,18 @@ public class Brain
 		for(int i =0;i<TRAFFIC_LIGHT_ID.length;i++)
 		{
 			trafficLight[i] = new TrafficLight(TRAFFIC_LIGHT_ID[i]);
+			lightTimer[i] = new LightTiming(TRAFFIC_LIGHT_ID[i]);
 		}
 		//initialize communication classes
 		send = new Send();
 		receive = new Receive(this);
-		//initialize light timer
-		lightTimer = new LightTiming();
+		//link light timers and traffic lights together
+		for(int i =0;i<TRAFFIC_LIGHT_ID.length;i++)
+		{
+			trafficLight[i].addTimer(lightTimer[i]);
+			lightTimer[i].addTrafficLight(trafficLight[i]);
+		}
+		
 	}
 	
 	/*
