@@ -7,11 +7,11 @@ import brain.violation.Violations;
 public class TrafficLight 
 {
 	//id of this traffic light
-	int id;
+	private int id;
 	//list of violations this traffic light has received
 	//possibly the buffer to be added to the cloud?
 	ArrayList<Violations> violations = new ArrayList<Violations>();
-	
+	//private LightTiming timing;
 	/*
 	 * initialize traffic light
 	 */
@@ -19,6 +19,17 @@ public class TrafficLight
 	{
 		this.id = id;
 	}
+	public int getTID()
+	{
+		return id;
+	}
+	/*
+	 * link the timer to this traffic light
+	 */
+	/*public void addTimer(LightTiming lt)
+	{
+		timing = lt;
+	}*/
 	/*
 	 * Add a violation to the violations array list 
 	 * this will be used when the traffic light receives messages from the car
@@ -34,4 +45,6 @@ public class TrafficLight
 	{
 		//deal with the contents of the message and respond accordingly
 	}
+	
+	
 }
