@@ -9,6 +9,9 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import com.pi4j.io.serial.Serial;
+import com.pi4j.io.serial.SerialFactory;
+
 import brain.communications.Receive;
 import brain.communications.Send;
 import brain.trafficlight.TrafficLight;
@@ -32,13 +35,16 @@ public class Brain extends JFrame implements ActionListener
 	JButton reset = new JButton("Reset");
 	JButton addTo = new JButton("Add 5 sec");
 	JButton subtract = new JButton("Rem 2.5 sec");
+	JButton sendTestMessage = new JButton("Send: Test!!Test");
 	//LightTiming controlNorth,controlSouth,controlEast,controlWest, control;
 	JLabel north, south, east, west;
 	
 	//Main to commence the program
+	final Serial serial = SerialFactory.createInstance();
 	
 	public static void main(String[] args) 
 	{
+		
 		new Brain();
 	}
 	/*
@@ -46,20 +52,25 @@ public class Brain extends JFrame implements ActionListener
 	 */
 	public Brain()
 	{
+		serial.open(Serial.DEFAULT_COM_PORT, 38400);
 		//initialize all four traffic lights
 		for(int i =0;i<TRAFFIC_LIGHT_ID.length;i++)
 		{
 			trafficLight[i] = new TrafficLight(TRAFFIC_LIGHT_ID[i]);
 		}
+
+		
 		//initialize communication classes
-		send = new Send();
-		receive = new Receive(this);
+		send = new Send(serial);
+		receive = new Receive(this, serial);
 		//link light timers and traffic lights together
 		/*for(int i =0;i<TRAFFIC_LIGHT_ID.length;i++)
 		{
 		//	trafficLight[i].addTimer(lightTimer[i]);
 		//	lightTimer[i].addTrafficLight(trafficLight[i]);
 		}*/
+
+
 		
 		initUI();
 		
@@ -106,6 +117,9 @@ public class Brain extends JFrame implements ActionListener
 		subtract.addActionListener(this);
 		c.add(subtract);
 		
+		sendTestMessage.setBounds(300,0,150,50);
+		sendTestMessage.addActionListener(this);
+		c.add(sendTestMessage);
 		
 		setVisible(true);
 		add(c);
@@ -129,7 +143,8 @@ public class Brain extends JFrame implements ActionListener
 	private void parseMessage(String message)
 	{
 		//determine which traffic light to alert
-		trafficLight[0/*this index will be set to the information that is gleamed from the message*/].receivedMessage(message);
+		//trafficLight[0/*this index will be set to the information that is gleamed from the message*/].receivedMessage(message);
+		System.out.println("Received = "+message);
 	}
 	public void updateLights()
 	{
@@ -177,6 +192,10 @@ public class Brain extends JFrame implements ActionListener
 		else if(e.getSource().equals(subtract))
 		{
 			lightTimer.subtractFromLights(2500);
+		}
+		else if(e.getSource().equals(sendTestMessage))
+		{
+			send.sendMessage("Test!!Test");
 		}
 		
 	}
