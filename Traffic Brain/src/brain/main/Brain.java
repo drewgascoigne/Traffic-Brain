@@ -9,11 +9,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import com.pi4j.io.serial.Serial;
-import com.pi4j.io.serial.SerialFactory;
+import rf.RFsocket;
 
-import brain.communications.Receive;
-import brain.communications.Send;
 import brain.trafficlight.TrafficLight;
 import brain.trafficlight.time.LightControlClock;
 
@@ -25,11 +22,10 @@ public class Brain extends JFrame implements ActionListener
 	public TrafficLight[] trafficLight = new TrafficLight[TRAFFIC_LIGHT_ID.length];
 	//timing class for the lights
 	//communication classes
-	public Receive receive;
-	public Send send;
+	RFsocket rf;
+	
 	LightControlClock lightTimer;
 	Thread lightTimerThread;
-	
 	
 	Container c = new Container();
 	JButton reset = new JButton("Reset");
@@ -39,12 +35,10 @@ public class Brain extends JFrame implements ActionListener
 	//LightTiming controlNorth,controlSouth,controlEast,controlWest, control;
 	JLabel north, south, east, west;
 	
-	//Main to commence the program
-	final Serial serial = SerialFactory.createInstance();
+	
 	
 	public static void main(String[] args) 
 	{
-		
 		new Brain();
 	}
 	/*
@@ -52,24 +46,22 @@ public class Brain extends JFrame implements ActionListener
 	 */
 	public Brain()
 	{
-		serial.open(Serial.DEFAULT_COM_PORT, 38400);
+
+		//initialize communication classes
+		rf = new RFsocket(this);
+		
 		//initialize all four traffic lights
 		for(int i =0;i<TRAFFIC_LIGHT_ID.length;i++)
 		{
 			trafficLight[i] = new TrafficLight(TRAFFIC_LIGHT_ID[i]);
 		}
 
-		
-		//initialize communication classes
-		send = new Send(serial);
-		receive = new Receive(this, serial);
 		//link light timers and traffic lights together
 		/*for(int i =0;i<TRAFFIC_LIGHT_ID.length;i++)
 		{
 		//	trafficLight[i].addTimer(lightTimer[i]);
 		//	lightTimer[i].addTrafficLight(trafficLight[i]);
 		}*/
-
 
 		
 		initUI();
@@ -127,15 +119,7 @@ public class Brain extends JFrame implements ActionListener
 		
 	
 	}
-	/*
-	 * Used by receive class to alert the brain and return the contents of the message received
-	 */
-	public synchronized void receivedMessage(String message)
-	{
-		//parse the message
-		//check validity of message?
-		parseMessage(message);
-	}
+
 	
 	/*
 	 * Parses the content of the message to determine which traffic light needs to be alerted
@@ -146,6 +130,7 @@ public class Brain extends JFrame implements ActionListener
 		//trafficLight[0/*this index will be set to the information that is gleamed from the message*/].receivedMessage(message);
 		System.out.println("Received = "+message);
 	}
+	
 	public void updateLights()
 	{
 
@@ -179,6 +164,7 @@ public class Brain extends JFrame implements ActionListener
 		
 		return Color.BLACK;
 	}
+	
 	public void actionPerformed(ActionEvent e)
 	{
 		if(e.getSource().equals(reset))
@@ -195,8 +181,11 @@ public class Brain extends JFrame implements ActionListener
 		}
 		else if(e.getSource().equals(sendTestMessage))
 		{
-			send.sendMessage("Test!!Test");
+			rf.dataSend("Test!!Test");
+		}else if(e.getSource().equals(rf)){
+			parseMessage(e.getActionCommand());
 		}
 		
 	}
 }
+
