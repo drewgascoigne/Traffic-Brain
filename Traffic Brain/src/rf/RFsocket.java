@@ -29,31 +29,43 @@ public class RFsocket extends Thread implements SerialDataListener {
 	}
 
 	@Override
-	public void dataReceived(SerialDataEvent event) {
+	public synchronized void dataReceived(SerialDataEvent event) {
 		// System.out.println("Received: " + event.getData());
 		String plate_no = event.getData().substring(0, 8);
-		dataSend(plate_no+":ACK Hello, drive safe"); // sending ACK
+		dataSend(plate_no+":ACK Hello, drive safe"+plate_no); // sending ACK
 		this.mainListener.actionPerformed(new ActionEvent(this, 0, event
 				.getData()));
+		
 
 	}
-
-	public void dataSend(final String message) {
+	//TODO add this to simulation
+//	public synchronized void dataReceivedSimulation(String msg)
+//	{
+//		String plate_no = msg.substring(0, 8);
+//		dataSend(plate_no+":ACK Hello, drive safe"+plate_no); // sending ACK
+//		this.mainListener.actionPerformed(new ActionEvent(this, 0, msg));
+//		
+//	}
+	public synchronized void broadcast()
+	{
+		
+	}
+	public synchronized void dataSend(final String message) {
 		if(!serial.isOpen()){
 			return;
 		}
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					serial.writeln(message);
-					sendSucess(message);
-				} catch (IllegalStateException ex) {
-					sendFailure(ex, message);
-				}
+//		new Thread(new Runnable() {
+//			@Override
+//			public void run() {
+		try {
+			serial.writeln(message);
+			sendSucess(message);
+		} catch (IllegalStateException ex) {
+			sendFailure(ex, message);
+		}
 
-			}
-		}).start();
+//			}
+//		}).start();
 	}
 
 	private void sendSucess(String message) {

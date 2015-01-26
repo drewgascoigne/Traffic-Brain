@@ -26,11 +26,17 @@ public class TrafficLightInfo
 
 	LightControlClock master;
 	
+	long lastSimulatedCar;
+	long timeDelay = 0;
+
+	
 	public TrafficLightInfo(int nolat, String cl, TrafficLight tid, LightControlClock master)
 	{
 		numberOfLightsAtIntersection = nolat;
 		currentLight =cl;
 		trafficLight = tid;
+		lastSimulatedCar = System.currentTimeMillis();
+		timeDelay = randomWithRange(2000, 6000);
 		this.master = master;
 	}
 	public void tick()
@@ -41,9 +47,20 @@ public class TrafficLightInfo
 			    TimeUnit.MILLISECONDS.toSeconds(temp) - 
 			    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(temp)));
 	//	System.out.println(""+tempform+"; TID: "+trafficID+"; Color = "+currentLight);
+		simulatedCar();
 		if(temp>endTime)
 		{
 			master.lightEnd(this);
+		}
+	}
+	public void simulatedCar()
+	{
+		long time = System.currentTimeMillis();
+		if(time>(lastSimulatedCar+timeDelay))
+		{
+			lastSimulatedCar = time;
+			timeDelay = randomWithRange(2000, 20000);
+			master.control.simulation.tick();
 		}
 	}
 	public void newTimer(long delay)
@@ -85,5 +102,10 @@ public class TrafficLightInfo
 		long temp = endTime - System.currentTimeMillis();
 	
 		return temp;
+	}
+	private long randomWithRange(long min, long max)
+	{
+	   long range = (max - min) + 1;     
+	   return (long)(Math.random() * range) + min;
 	}
 }
