@@ -29,31 +29,46 @@ public class RFsocket extends Thread implements SerialDataListener {
 	}
 
 	@Override
-	public void dataReceived(SerialDataEvent event) {
-		// System.out.println("Received: " + event.getData());
+	public synchronized void dataReceived(SerialDataEvent event) {
+		System.out.println("Received: " + event.getData());
+		
+		int length = event.getData().length();
+		if(length < 16) return;
+		
 		String plate_no = event.getData().substring(0, 8);
-		dataSend(plate_no+":ACK Hello, drive safe"); // sending ACK
+		if(!plate_no.equals(event.getData().substring(length - 9, length-1))){
+			// plate number at the beginning does not match the plate number at the end of the message
+			return ;
+		}
+		dataSend(plate_no+":ACK drive safe:"+plate_no); // sending ACK
 		this.mainListener.actionPerformed(new ActionEvent(this, 0, event
 				.getData()));
 
 	}
 
-	public void dataSend(final String message) {
+	public synchronized void dataSend(final String message) {
 		if(!serial.isOpen()){
 			return;
 		}
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
+//		new Thread(new Runnable() {
+//			@Override
 				try {
-					serial.writeln(message);
+					serial.write("<".getBytes()[0]);
+					for(int i = 0 ; i < message.length(); i++){
+						serial.write(message.getBytes()[i]);
+					}
+					serial.write(">".getBytes()[0]);
 					sendSucess(message);
+					Thread.sleep(100);
 				} catch (IllegalStateException ex) {
 					sendFailure(ex, message);
-				}
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} 
 
-			}
-		}).start();
+//			}
+//		}).start();
 	}
 
 	private void sendSucess(String message) {
