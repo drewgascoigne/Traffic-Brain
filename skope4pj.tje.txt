@@ -1,0 +1,21 @@
+﻿modified the transmitter
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch abdullah
+# Your branch is up-to-date with 'origin/abdullah'.
+#
+# Changes to be committed:
+#	modified:   Traffic Brain/bin/rf/RFsocket.class
+#	modified:   Traffic Brain/bin/test/RFTest$1.class
+#	modified:   Traffic Brain/bin/test/RFTest.class
+#	modified:   Traffic Brain/src/rf/RFsocket.java
+#	modified:   Traffic Brain/src/test/RFTest.java
+#	new file:   build/rcv.jar
+#	new file:   build/send.jar
+#	modified:   build/traffic.jar
+#
+# Changes not staged for commit:
+#	deleted:    Traffic Brain/bin/rf/RFsocket$1.class
+#	deleted:    Traffic Brain/bin/test/RFTest$2.class
+#
+
