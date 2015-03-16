@@ -108,20 +108,19 @@ public class LEDTEST {
         });
         
         // run continuously until user aborts with CTRL-C
-        while(true) {
+//        while(true) {
                         
             // step up the ladder
             for(int index = PiFaceLed.LED3.getIndex(); index <= PiFaceLed.LED7.getIndex(); index++) {
-                piface.getLed(index).pulse(cylonSpeed);
-                Thread.sleep(cylonSpeed);
+                piface.getLed(index).on();
             }
             
             // step down the ladder
-            for(int index = PiFaceLed.LED7.getIndex(); index >= PiFaceLed.LED3.getIndex(); index--) {
-                piface.getLed(index).pulse(cylonSpeed);
-                Thread.sleep(cylonSpeed);
-            }            
-        }
+//            for(int index = PiFaceLed.LED7.getIndex(); index >= PiFaceLed.LED3.getIndex(); index--) {
+//                piface.getLed(index).pulse(cylonSpeed);
+//                Thread.sleep(cylonSpeed);
+//            }            
+//        }
         
         // stop all GPIO activity/threads by shutting down the GPIO controller
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)

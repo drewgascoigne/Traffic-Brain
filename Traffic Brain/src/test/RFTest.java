@@ -13,8 +13,7 @@ public class RFTest {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("Received: " + e.getActionCommand());
-
+				System.out.println("Full message Received: " + e.getActionCommand()+"\t"+ ((String)e.getActionCommand()).equals("Hello traffic,me is car"));
 			}
 
 		});

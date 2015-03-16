@@ -1,4 +1,4 @@
-package brain.violation;
+package violation;
 
 public class RedLightViolation extends Violations
 {
